@@ -17,7 +17,7 @@ public class MoreApplication {
   }
 
   @Bean
-  public RestTemplate restTemplate(@Qualifier("okHttp3ClientHttpRequestFactory") ClientHttpRequestFactory factory) {
+  public RestTemplate restTemplate(@Qualifier("simpleClientHttpRequestFactory") ClientHttpRequestFactory factory) {
     return new RestTemplate(factory);
   }
 

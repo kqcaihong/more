@@ -48,6 +48,13 @@
 			<groupId>com.squareup.okhttp</groupId>
 			<artifactId>okhttp</artifactId>
 			<version>2.7.5</version>
+<!--		因为下方引入了okhttp3，避免冲突-->
+			<exclusions>
+				<exclusion>
+					<groupId>com.squareup.okio</groupId>
+					<artifactId>okio</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>

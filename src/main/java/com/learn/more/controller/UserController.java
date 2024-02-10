@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequestMapping("/user")
 @RestController
-public class UserController {
+public class UserController implements InitializingBean {
 
   private static final AtomicLong ID_GENERATOR = new AtomicLong(0);
   // 模拟数据库保存
@@ -37,5 +38,11 @@ public class UserController {
     user.setId(ID_GENERATOR.incrementAndGet());
     USER_MAP.put(user.getId(), user);
     return user;
+  }
+
+  @Override
+  public void afterPropertiesSet() {
+    User bob = new User(ID_GENERATOR.incrementAndGet(), "Bob", 33);
+    USER_MAP.put(bob.getId(), bob);
   }
 }
