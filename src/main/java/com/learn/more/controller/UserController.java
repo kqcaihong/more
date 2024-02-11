@@ -18,9 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/user")
 @RestController
 public class UserController implements InitializingBean {
-
+  // 生成ID
   private static final AtomicLong ID_GENERATOR = new AtomicLong(0);
-  // 模拟数据库保存
+  // 模拟数据库保存记录
   private static final Map<Long, User> USER_MAP = new ConcurrentHashMap<>();
 
   @GetMapping("/queryById")
@@ -40,6 +40,7 @@ public class UserController implements InitializingBean {
     return user;
   }
 
+  // 初始化一条记录
   @Override
   public void afterPropertiesSet() {
     User bob = new User(ID_GENERATOR.incrementAndGet(), "Bob", 33);

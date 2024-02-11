@@ -16,26 +16,26 @@ public class MoreApplication {
     SpringApplication.run(MoreApplication.class, args);
   }
 
-  @Bean
-  public RestTemplate restTemplate(@Qualifier("simpleClientHttpRequestFactory") ClientHttpRequestFactory factory) {
-    return new RestTemplate(factory);
-  }
+//  @Bean
+//  public RestTemplate restTemplate(@Qualifier("simpleClientHttpRequestFactory") ClientHttpRequestFactory factory) {
+//    return new RestTemplate(factory);
+//  }
 
-  @Bean
-  public ClientHttpRequestFactory simpleClientHttpRequestFactory() {
-    SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
-    // HttpURLConnection只支持设置这两个超时时间
-    factory.setConnectTimeout(10000);
-    factory.setReadTimeout(30000);
-    return factory;
-  }
-
-  @Bean
-  public ClientHttpRequestFactory okHttp3ClientHttpRequestFactory() {
-    OkHttp3ClientHttpRequestFactory factory = new OkHttp3ClientHttpRequestFactory();
-    factory.setConnectTimeout(10000);
-    factory.setReadTimeout(30000);
-    factory.setWriteTimeout(30000);
-    return factory;
-  }
+//  @Bean
+//  public ClientHttpRequestFactory simpleClientHttpRequestFactory() {
+//    SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
+//    // HttpURLConnection只支持设置这两个超时时间
+//    factory.setConnectTimeout(10000);
+//    factory.setReadTimeout(30000);
+//    return factory;
+//  }
+//
+//  @Bean
+//  public ClientHttpRequestFactory okHttp3ClientHttpRequestFactory() {
+//    OkHttp3ClientHttpRequestFactory factory = new OkHttp3ClientHttpRequestFactory();
+//    factory.setConnectTimeout(10000);
+//    factory.setReadTimeout(30000);
+//    factory.setWriteTimeout(30000);
+//    return factory;
+//  }
 }
