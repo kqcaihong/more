@@ -5,21 +5,25 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import okhttp3.MediaType;
-import okhttp3.OkHttpClient.Builder;
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 
 public class OkHttpClientTest {
 
-  //创建单个OkHttpClient实例可以将进行重复使用，支持异步、同步请求
-  public static void main(String[] args) {
-    get();
+  public static void main(String[] args) throws IOException {
+    doAsyncGet("http://localhost:8010/user/queryAll");
+
+    String param = "{\"name\":\"Andy\",\"age\":18}";
+    String result = doPostByOkhttp3("http://localhost:8010/user/add", param);
+    System.out.println(result);
   }
 
-  // client复用，对客户端设置超时
-  private static void get() {
+  private static void doAsyncGet(String url) {
     try {
+      // client复用，对客户端设置超时
       OkHttpClient client = new OkHttpClient();
       client.setConnectTimeout(30L, TimeUnit.SECONDS);
       client.setReadTimeout(30L, TimeUnit.SECONDS);
@@ -27,17 +31,8 @@ public class OkHttpClientTest {
 
       Request request = new Request.Builder()
           .get()
-          .url("http://www.baidu.com")
+          .url(url)
           .build();
-
-      //      Response response = client.newCall(request).execute();
-      //      if (response.isSuccessful()) {
-      //        Headers responseHeaders = response.headers();
-      //        for (int i = 0; i < responseHeaders.size(); i++) {
-      //          System.out.println(responseHeaders.name(i) + ": " + responseHeaders.value(i));
-      //        }
-      //        System.out.println(response.body().string());
-      //      }
       client.newCall(request).enqueue(new Callback() {
         @Override
         public void onFailure(Request request, IOException e) {
@@ -54,17 +49,22 @@ public class OkHttpClientTest {
     }
   }
 
-  private static void http5Post(String url) throws IOException {
-    okhttp3.OkHttpClient client = new Builder()
+  private static String doPostByOkhttp3(String url, String param) throws IOException {
+    okhttp3.OkHttpClient client = new okhttp3.OkHttpClient.Builder()
         .connectTimeout(30L, TimeUnit.SECONDS)
         .readTimeout(30L, TimeUnit.SECONDS)
         .build();
-    RequestBody body = RequestBody.create("", MediaType.parse("application/json"));
+    RequestBody requestBody = RequestBody.create(param, MediaType.parse("application/json"));
     okhttp3.Request request = new okhttp3.Request.Builder()
         .url(url)
-        .post(body)
+        .post(requestBody)
+        .addHeader("Accept-Type", "application/json")
         .build();
     okhttp3.Response response = client.newCall(request).execute();
-    System.out.println(response);
+    if (response.isSuccessful()) {
+      ResponseBody body = response.body();
+      return Objects.nonNull(body) ? body.string() : "";
+    }
+    return "";
   }
 }

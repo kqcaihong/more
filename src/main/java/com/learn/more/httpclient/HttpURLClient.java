@@ -10,14 +10,14 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
-// 对连接设置超时
 public class HttpURLClient {
 
   public static void main(String[] args) {
-    //    String result = doGet("http://localhost:8010/user/queryAll");
-    //    System.out.println(result);
-    String param = "{\"name\":\"Jerry\",\"age\":23}";
-    String result = doPost("http://localhost:8010/user/add", param);
+    String result = doGet("http://localhost:8010/user/queryAll");
+    System.out.println(result);
+
+    String param = "{\"name\":\"Andy\",\"age\":18}";
+    result = doPost("http://localhost:8010/user/add", param);
     System.out.println(result);
   }
 
@@ -36,7 +36,7 @@ public class HttpURLClient {
       connection.setReadTimeout(30000);
       // 建立连接，发送请求
       connection.connect();
-      // 通过connection连接，获取输入流
+      // 获取输入流
       if (connection.getResponseCode() == 200) {
         is = connection.getInputStream();
         br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
@@ -84,17 +84,16 @@ public class HttpURLClient {
       connection.setDoOutput(true);
       // 默认值为：true，当前向远程服务读取数据时，设置为true
       connection.setDoInput(true);
-      // 设置入参格式
+      // 设置入参、响应格式
       connection.setRequestProperty("Content-Type", "application/json");
       connection.setRequestProperty("Accept-Type", "application/json");
       connection.connect();
-      // 通过连接对象获取一个输出流
+      // 向输出流写出入参
       os = connection.getOutputStream();
       os.write(param.getBytes());
-      // 通过连接对象获取一个输入流，向远程读取
+      // 通过输入流读取响应
       if (connection.getResponseCode() == 200) {
         is = connection.getInputStream();
-        // 对输入流对象进行包装:charset根据工作项目组的要求来设置
         br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
         StringBuilder sbf = new StringBuilder();
         String line;

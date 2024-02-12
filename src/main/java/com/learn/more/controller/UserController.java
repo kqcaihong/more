@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/user")
 @RestController
 public class UserController implements InitializingBean {
+
   // 生成ID
   private static final AtomicLong ID_GENERATOR = new AtomicLong(0);
   // 模拟数据库保存记录
