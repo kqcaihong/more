@@ -49,7 +49,7 @@ class RestTemplateTest {
     header.put(HttpHeaders.CONTENT_TYPE, Collections.singletonList(MediaType.APPLICATION_JSON_VALUE));
     header.put(HttpHeaders.ACCEPT, Collections.singletonList(MediaType.APPLICATION_JSON_VALUE));
     HttpEntity<User> entity = new HttpEntity<>(header);
-
+    // 匿名子类
     ParameterizedTypeReference<List<User>> type = new ParameterizedTypeReference<List<User>>() {
     };
     ResponseEntity<List<User>> allUser = restTemplate.exchange(url, HttpMethod.GET, entity, type);
@@ -57,9 +57,36 @@ class RestTemplateTest {
   }
 
   @Test
-  void postForObject() {
+  void postByParam() {
+    String url = BASE_URL + "/user/addByParam";
+    // 设置请求的 Content-Type
+    MultiValueMap<String, String> header = new LinkedMultiValueMap<>();
+    header.add(HttpHeaders.CONTENT_TYPE, (MediaType.APPLICATION_FORM_URLENCODED_VALUE));
+    MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
+    map.add("name", "Cathy");
+    map.add("age", 23);
+    HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(map, header);
+    ResponseEntity<User> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity, User.class);
+    System.out.println(response.getBody());
+  }
+
+  @Test
+  void postByParam2() {
+    String url = BASE_URL + "/user/addByParam";
+    // 设置请求的 Content-Type
+    MultiValueMap<String, String> header = new LinkedMultiValueMap<>();
+    header.add(HttpHeaders.CONTENT_TYPE, (MediaType.APPLICATION_FORM_URLENCODED_VALUE));
+    String param = new StringBuilder().append("name=Judy").append("&").append("age=18").toString();
+    HttpEntity<String> httpEntity = new HttpEntity<>(param, header);
+    ResponseEntity<User> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity, User.class);
+    System.out.println(response.getBody());
+  }
+
+  @Test
+  void postByBody() {
     String url = BASE_URL + "/user/add";
-    User tom = new User("Tom", 23);
+    User tom = new User("Cathy", 23);
+    // body体传参
     User user = restTemplate.postForObject(url, tom, User.class);
     System.out.println(user);
   }

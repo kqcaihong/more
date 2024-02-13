@@ -1,6 +1,5 @@
 package com.learn.more;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -17,9 +16,14 @@ public class MoreApplication {
   }
 
   @Bean
-  public RestTemplate restTemplate(@Qualifier("simpleClientHttpRequestFactory") ClientHttpRequestFactory factory) {
-    return new RestTemplate(factory);
+  public RestTemplate restTemplate() {
+    return new RestTemplate();
   }
+
+//  @Bean
+//  public RestTemplate restTemplate(@Qualifier("simpleClientHttpRequestFactory") ClientHttpRequestFactory factory) {
+//    return new RestTemplate(factory);
+//  }
 
   @Bean
   public ClientHttpRequestFactory simpleClientHttpRequestFactory() {
@@ -30,6 +34,7 @@ public class MoreApplication {
     return factory;
   }
 
+  // 当使用okHttp3作为RestTemplate底层Http Client时
   @Bean
   public ClientHttpRequestFactory okHttp3ClientHttpRequestFactory() {
     OkHttp3ClientHttpRequestFactory factory = new OkHttp3ClientHttpRequestFactory();

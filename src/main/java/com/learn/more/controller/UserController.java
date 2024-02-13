@@ -41,6 +41,14 @@ public class UserController implements InitializingBean {
     return user;
   }
 
+  @PostMapping("/addByParam")
+  public User addByParam(@RequestParam String name, @RequestParam int age) {
+    User user = new User(name, age);
+    user.setId(ID_GENERATOR.incrementAndGet());
+    USER_MAP.put(user.getId(), user);
+    return user;
+  }
+
   // 初始化一条记录
   @Override
   public void afterPropertiesSet() {
