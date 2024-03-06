@@ -1,8 +1,11 @@
 package com.learn.more.httpclient;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+import okhttp3.Cache;
+import okhttp3.CacheControl;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
@@ -14,19 +17,53 @@ import okhttp3.ResponseBody;
 
 public class OkHttp3ClientTest {
 
-  public static void main(String[] args) throws IOException {
-    doAsyncGet("http://localhost:8010/user/queryAll");
+  public static final File CACHE_DIRECTORY = new File("D:/okhttp/cache");
+  public static final long MAX_SIZE = 50L * 1024L * 1024L;
+  public static final OkHttpClient client = new OkHttpClient.Builder()
+      .connectTimeout(3L, TimeUnit.SECONDS)
+      .readTimeout(5L, TimeUnit.SECONDS)
+      .cache(new Cache(CACHE_DIRECTORY, MAX_SIZE))
+      .build();
 
-    String param = "{\"name\":\"Andy\",\"age\":18}";
-    String result = doPost("http://localhost:8010/user/add", param);
-    System.out.println(result);
+  public static void main(String[] args) throws IOException {
+//    doAsyncGet("http://localhost:8010/user/queryAll");
+
+        String param = "{\"name\":\"Andy\",\"age\":18}";
+        String result = doPost("http://localhost:8010/user/add", param);
+        System.out.println(result);
+    //
+    //    doAsyncGet("http://localhost:8010/user/queryAll");
+
+    //    Request request = new Request.Builder()
+    //        .cacheControl(new CacheControl.Builder().noCache().build())
+    //        .url("http://publicobject.com/helloworld.txt")
+    //        .build();
+    //    Request request2 = new Request.Builder()
+    //        .cacheControl(new CacheControl.Builder().maxAge(0, TimeUnit.SECONDS).build())
+    //        .url("http://publicobject.com/helloworld.txt")
+    //        .build();
+    //    Request request3 = new Request.Builder()
+    //        .cacheControl(new CacheControl.Builder().noCache().build())
+    //        .url("http://publicobject.com/helloworld.txt")
+    //        .build();
+    //
+        Request request4 = new Request.Builder()
+            .cacheControl(new CacheControl.Builder().noStore().build())
+            .url("http://publicobject.com/helloworld.txt")
+            .build();
+    //    Response forceCacheResponse = client.newCall(request).execute();
+    //    if (forceCacheResponse.code() != 504) {
+    //      // 命中缓存，使用它
+    //    } else {
+    //      // 资源未被缓存
+    //    }
+    //    Request request5 = new Request.Builder()
+    //        .cacheControl(new CacheControl.Builder().maxStale(10, TimeUnit.DAYS).build())
+    //        .url("http://publicobject.com/helloworld.txt")
+    //        .build();
   }
 
   private static String doPost(String url, String param) throws IOException {
-    OkHttpClient client = new OkHttpClient.Builder()
-        .connectTimeout(10L, TimeUnit.SECONDS)
-        .readTimeout(30L, TimeUnit.SECONDS)
-        .build();
     RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), param);
     Request request = new Request.Builder()
         .url(url)
@@ -43,11 +80,8 @@ public class OkHttp3ClientTest {
   }
 
   private static void doAsyncGet(String url) {
-    OkHttpClient client = new OkHttpClient.Builder()
-        .connectTimeout(10L, TimeUnit.SECONDS)
-        .readTimeout(30L, TimeUnit.SECONDS)
-        .build();
     Request request = new Request.Builder()
+//        .cacheControl(new CacheControl.Builder().onlyIfCached().build())
         .url(url)
         .get()
         .addHeader("Accept-Type", "application/json")
@@ -61,8 +95,12 @@ public class OkHttp3ClientTest {
 
       @Override
       public void onResponse(Call call, Response response) throws IOException {
-        assert response.body() != null;
-        System.out.println(response.body().string());
+        if (response.code() != 504) {
+          assert response.body() != null;
+          System.out.println(response.body().string());
+        } else {
+          System.out.println("资源未被缓存");
+        }
       }
     });
   }
